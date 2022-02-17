@@ -1,23 +1,11 @@
-const http = require('http');
+const { createReadStream } = require('fs');
 
-const server = http.createServer((req, res) => {
-    if(req.url === '/') {
-        res.end('Home page');
-    }
+const stream = createReadStream('./content/big.txt', { highWaterMark: 90000, encoding: 'utf8' });
 
-    if(req.url === '/about') {
-
-        for(let i = 0; i < 1000; i++) {
-            for(let j = 0; j < 1000; j++) {
-                console.log(`${i} ${j}`);
-            }
-        }
-        res.end('About page');
-    }
-
-    res.end('No such page found');
+stream.on('data', (result) => {
+    console.log(result);
 });
 
-server.listen(5000, () => {
-    console.log("Server listening on port 5000...");
-});
+stream.on('error', (err) => {
+    console.log(err);
+})
